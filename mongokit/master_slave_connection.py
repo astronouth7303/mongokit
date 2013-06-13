@@ -12,7 +12,7 @@ except ImportError:
 
 from mongokit.connection import MongoKitConnection
 
-class MasterSlaveConnection(PymongoMasterSlaveConnection, MongoKitConnection):
+class MasterSlaveConnection(MongoKitConnection, PymongoMasterSlaveConnection):
     """ Master-Slave support for MongoKit """
 
     def __init__(self, master, slaves=[]):
@@ -36,7 +36,7 @@ class MasterSlaveConnection(PymongoMasterSlaveConnection, MongoKitConnection):
         # I am the master
         if not isinstance(master, dict):
             raise TypeError('"master" must be a dict  containing pymongo.Connection parameters')
-        master_connection = PyMongoConnection(**master)
+        master_connection = PymongoConnection(**master)
 
         # You are my dirty slaves
         if not slaves:
@@ -47,7 +47,8 @@ class MasterSlaveConnection(PymongoMasterSlaveConnection, MongoKitConnection):
             if not isinstance(slave, dict):
                 raise TypeError('"slaves" must be list of dicts containing pymongo.Connection parameters')
             slave['slave_okay'] = True
-            slave_connections.append(PyMongoConnection(**slave))
+            slave_connections.append(PymongoConnection(**slave))
 
-        super(MasterSlaveConnection, self).__init__(master_connection, slave_connections)
+        # Specifying that it should use the pymongo init
+        PymongoMasterSlaveConnection.__init__(self, master_connection, slave_connections)
 
