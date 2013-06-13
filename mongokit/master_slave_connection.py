@@ -10,7 +10,7 @@ try:
 except ImportError:
     from pymongo import Connection as PymongoConnection
 
-from mongokit import connection as MongoKitConnection
+from mongokit.connection import MongoKitConnection
 
 class MasterSlaveConnection(PymongoMasterSlaveConnection, MongoKitConnection):
     """ Master-Slave support for MongoKit """
@@ -32,9 +32,6 @@ class MasterSlaveConnection(PymongoMasterSlaveConnection, MongoKitConnection):
             master (and re-synced to the slave automatically as part of the
             master-slave setup).
         """
-
-        self._databases = {}
-        self._registered_documents = {}
 
         # I am the master
         if not isinstance(master, dict):
