@@ -48,10 +48,12 @@ class CallableMixin(object):
 _iterables = (list, tuple, set, frozenset)
 
 class MongoKitConnection(object):
-    _databases = {}
-    _registered_documents = {}
-
     def register(self, obj_list):
+        if not hasattr(self, '_databases'):
+            self._databases = {}
+        if not hasattr(self, '_registered_documents'):
+            self._registered_documents = {}
+
         decorator = None
         if not isinstance(obj_list, _iterables):
             # we assume that the user used this as a decorator
@@ -81,6 +83,11 @@ class MongoKitConnection(object):
             return decorator
 
     def __getattr__(self, key):
+        if not hasattr(self, '_databases'):
+            self._databases = {}
+        if not hasattr(self, '_registered_documents'):
+            self._registered_documents = {}
+
         if key in self._registered_documents:
             document = self._registered_documents[key]
             try:
@@ -97,5 +104,5 @@ class MongoKitConnection(object):
 class Connection(PymongoConnection, MongoKitConnection):
     def __init__(self, *args, **kwargs):
         super(Connection, self).__init__(*args, **kwargs)
-        
+
 MongoClient = Connection
