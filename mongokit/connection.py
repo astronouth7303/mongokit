@@ -94,7 +94,7 @@ class MongoKitConnection(object):
                 self._databases[key] = Database(self, key)
             return self._databases[key]
 
-class Connection(PymongoConnection, MongokitConnection):
+class Connection(PymongoConnection, MongoKitConnection):
     def __init__(self, *args, **kwargs):
         super(Connection, self).__init__(*args, **kwargs)
         
