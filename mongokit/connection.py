@@ -26,10 +26,11 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 try:
-    from pymongo import Connection as PymongoConnection
-except ImportError:
     from pymongo import MongoClient as PymongoConnection
+except ImportError:
+    from pymongo import Connection as PymongoConnection
 from database import Database
+
 
 class CallableMixin(object):
     """
@@ -47,11 +48,14 @@ class CallableMixin(object):
 
 _iterables = (list, tuple, set, frozenset)
 
-class MongoKitConnection(object):
-    _databases = {}
-    _registered_documents = {}
 
+class MongoKitConnection(object):
     def register(self, obj_list):
+        if not hasattr(self, '_databases'):
+            self._databases = {}
+        if not hasattr(self, '_registered_documents'):
+            self._registered_documents = {}
+
         decorator = None
         if not isinstance(obj_list, _iterables):
             # we assume that the user used this as a decorator
@@ -81,6 +85,11 @@ class MongoKitConnection(object):
             return decorator
 
     def __getattr__(self, key):
+        if not hasattr(self, '_databases'):
+            self._databases = {}
+        if not hasattr(self, '_registered_documents'):
+            self._registered_documents = {}
+
         if key in self._registered_documents:
             document = self._registered_documents[key]
             try:
@@ -94,8 +103,10 @@ class MongoKitConnection(object):
                 self._databases[key] = Database(self, key)
             return self._databases[key]
 
-class Connection(PymongoConnection, MongoKitConnection):
+
+class Connection(MongoKitConnection, PymongoConnection):
     def __init__(self, *args, **kwargs):
-        super(Connection, self).__init__(*args, **kwargs)
-        
+        # Specifying that it should use the pymongo init
+        PymongoConnection.__init__(self, *args, **kwargs)
+
 MongoClient = Connection
