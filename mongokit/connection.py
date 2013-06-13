@@ -47,12 +47,9 @@ class CallableMixin(object):
 
 _iterables = (list, tuple, set, frozenset)
 
-class Connection(PymongoConnection):
-
-    def __init__(self, *args, **kwargs):
-        self._databases = {}
-        self._registered_documents = {}
-        super(Connection, self).__init__(*args, **kwargs)
+class MongoKitConnection(object):
+    _databases = {}
+    _registered_documents = {}
 
     def register(self, obj_list):
         decorator = None
@@ -97,4 +94,8 @@ class Connection(PymongoConnection):
                 self._databases[key] = Database(self, key)
             return self._databases[key]
 
+class Connection(PymongoConnection, MongokitConnection):
+    def __init__(self, *args, **kwargs):
+        super(Connection, self).__init__(*args, **kwargs)
+        
 MongoClient = Connection

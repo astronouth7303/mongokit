@@ -5,7 +5,7 @@ Liyan Chang, liyan@filepicker.io
 """
 
 from pymongo.replica_set_connection import ReplicaSetConnection as PymongoReplicaSetConnection
-from mongokit import connection as MongoKitConnection
+from mongokit import MongoKitConnection
 
 class ReplicaSetConnection(PymongoReplicaSetConnection, MongoKitConnection):
     """ Replica Set support for MongoKit """
@@ -14,9 +14,5 @@ class ReplicaSetConnection(PymongoReplicaSetConnection, MongoKitConnection):
         """ The ReplicaSetConnection is a wrapper around the
             pymongo.replica_set_connection implementation.
         """
-
-        self._databases = {}
-        self._registered_documents = {}
-
         super(ReplicaSetConnection, self).__init__(*args, **kwargs)
 
