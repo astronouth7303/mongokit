@@ -7,7 +7,7 @@ Liyan Chang, liyan@filepicker.io
 from pymongo.replica_set_connection import ReplicaSetConnection as PymongoReplicaSetConnection
 from mongokit.connection import MongoKitConnection
 
-class ReplicaSetConnection(PymongoReplicaSetConnection, MongoKitConnection):
+class ReplicaSetConnection(MongoKitConnection, PymongoReplicaSetConnection):
     """ Replica Set support for MongoKit """
 
     def __init__(self, *args, **kwargs):
