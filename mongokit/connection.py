@@ -26,9 +26,9 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 try:
-    from pymongo import Connection as PymongoConnection
-except ImportError:
     from pymongo import MongoClient as PymongoConnection
+except ImportError:
+    from pymongo import Connection as PymongoConnection
 from database import Database
 
 class CallableMixin(object):
@@ -47,13 +47,10 @@ class CallableMixin(object):
 
 _iterables = (list, tuple, set, frozenset)
 
-class Connection(PymongoConnection):
+class MongoKitConnection(object):
+    _databases = {}
+    _registered_documents = {}
 
-    def __init__(self, *args, **kwargs):
-        self._databases = {} 
-        self._registered_documents = {}
-        super(Connection, self).__init__(*args, **kwargs)
-    
     def register(self, obj_list):
         decorator = None
         if not isinstance(obj_list, _iterables):
@@ -97,4 +94,8 @@ class Connection(PymongoConnection):
                 self._databases[key] = Database(self, key)
             return self._databases[key]
 
+class Connection(PymongoConnection, MongoKitConnection):
+    def __init__(self, *args, **kwargs):
+        super(Connection, self).__init__(*args, **kwargs)
+        
 MongoClient = Connection
