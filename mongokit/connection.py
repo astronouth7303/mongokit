@@ -50,10 +50,10 @@ _iterables = (list, tuple, set, frozenset)
 class Connection(PymongoConnection):
 
     def __init__(self, *args, **kwargs):
-        self._databases = {} 
+        self._databases = {}
         self._registered_documents = {}
         super(Connection, self).__init__(*args, **kwargs)
-    
+
     def register(self, obj_list):
         decorator = None
         if not isinstance(obj_list, _iterables):
