@@ -48,8 +48,12 @@ class CallableMixin(object):
 
 _iterables = (list, tuple, set, frozenset)
 
-
 class MongoKitConnection(object):
+
+    def __init__(self, *args, **kwargs):
+        self._databases = {}
+        self._registered_documents = {}
+
     def register(self, obj_list):
         if not hasattr(self, '_databases'):
             self._databases = {}
@@ -103,10 +107,10 @@ class MongoKitConnection(object):
                 self._databases[key] = Database(self, key)
             return self._databases[key]
 
-
 class Connection(MongoKitConnection, PymongoConnection):
     def __init__(self, *args, **kwargs):
-        # Specifying that it should use the pymongo init
+        # Specifying that it should run both the inits
+        MongoKitConnection.__init__(self, *args, **kwargs)
         PymongoConnection.__init__(self, *args, **kwargs)
 
 MongoClient = Connection

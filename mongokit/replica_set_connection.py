@@ -11,7 +11,7 @@ class ReplicaSetConnection(MongoKitConnection, PymongoReplicaSetConnection):
     """ Replica Set support for MongoKit """
 
     def __init__(self, *args, **kwargs):
-        super(ReplicaSetConnection, self).__init__(*args, **kwargs)
-        # Specifying that it should use the pymongo init
+        # Specifying that it should run both the inits
+        MongoKitConnection.__init__(self, *args, **kwargs)
         PymongoReplicaSetConnection.__init__(self, *args, **kwargs)
 

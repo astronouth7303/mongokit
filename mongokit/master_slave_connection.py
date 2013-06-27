@@ -33,6 +33,9 @@ class MasterSlaveConnection(MongoKitConnection, PymongoMasterSlaveConnection):
             master-slave setup).
         """
 
+        # Run both inits. MongoKitConnection specific one. Then the Pymongo one at the end
+        MongoKitConnection.__init__(self)
+
         # I am the master
         if not isinstance(master, dict):
             raise TypeError('"master" must be a dict  containing pymongo.Connection parameters')
